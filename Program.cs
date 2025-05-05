@@ -39,10 +39,12 @@ builder.Services.AddHttpClient("Default", client =>
 // Регистрируем пользовательские сервисы
 builder.Services.AddScoped<JsonDataService>();
 builder.Services.AddScoped<GrainHarvestService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<StatisticsService>();
 
 var app = builder.Build();
 
-//  Инициализация базы данных при запуске приложения
+// Инициализация базы данных при запуске приложения
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -55,6 +57,19 @@ using (var scope = app.Services.CreateScope())
         {
             // Если базы нет — создаём и импортируем данные
             context.Database.EnsureCreated();
+
+            // Добавляем начального администратора
+            var adminUser = new User
+            {
+                UserName = "admin",
+                Email = "admin@example.com",
+                Password = "admin123", // В реальном приложении пароль должен быть хеширован
+                IsAdmin = true
+            };
+            context.Users.Add(adminUser);
+            await context.SaveChangesAsync();
+
+            // Импортируем данные о зерновых
             var importer = new XlsImporter(context);
             await importer.ImportGrainDataAsync();
         }

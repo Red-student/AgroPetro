@@ -1,0 +1,490 @@
+@page "/profile"
+@using OpenEcologyApp.Data
+@using OpenEcologyApp.Services
+@using System.ComponentModel.DataAnnotations
+@inject UserService UserService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Профиль</PageTitle>
+
+<div class="profile-center-wrap">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <h2 class="profile-title">Профиль пользователя</h2>
+            <p class="profile-subtitle">Управление личными данными и настройками безопасности</p>
+        </div>
+
+        <div class="profile-section">
+            <div class="section-header">
+                <i class="fas fa-user-edit"></i>
+                <h4>Личные данные</h4>
+            </div>
+            <EditForm Model="@userModel" OnValidSubmit="SaveProfile">
+                <DataAnnotationsValidator />
+                <div class="profile-field">
+                    <label><i class="fas fa-user"></i> Имя пользователя</label>
+                    <InputText class="profile-input" @bind-Value="userModel.UserName" disabled="@(!isEdit)" placeholder="Введите ваше имя" />
+                </div>
+                <div class="profile-field">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <InputText class="profile-input" @bind-Value="userModel.Email" disabled="@(!isEdit)" placeholder="Введите ваш email" />
+                </div>
+                <div class="profile-btns">
+                    @if (!isEdit)
+                    {
+                        <button type="button" class="profile-btn edit" @onclick="() => isEdit = true">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="profile-btn save">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        <button type="button" class="profile-btn cancel" @onclick="CancelEdit">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                    }
+                </div>
+            </EditForm>
+        </div>
+
+        <div class="profile-section">
+            <div class="section-header">
+                <i class="fas fa-lock"></i>
+                <h4>Безопасность</h4>
+            </div>
+            <EditForm Model="@passwordModel" OnValidSubmit="ChangePassword">
+                <DataAnnotationsValidator />
+                <div class="profile-field">
+                    <label><i class="fas fa-key"></i> Текущий пароль</label>
+                    <InputText class="profile-input" @bind-Value="passwordModel.OldPassword" type="password" placeholder="Введите текущий пароль" />
+                </div>
+                <div class="profile-field">
+                    <label><i class="fas fa-lock"></i> Новый пароль</label>
+                    <InputText class="profile-input" @bind-Value="passwordModel.NewPassword" type="password" placeholder="Введите новый пароль" />
+                </div>
+                <div class="profile-field">
+                    <label><i class="fas fa-lock"></i> Подтверждение пароля</label>
+                    <InputText class="profile-input" @bind-Value="passwordModel.ConfirmPassword" type="password" placeholder="Подтвердите новый пароль" />
+                </div>
+                @if (!string.IsNullOrEmpty(passwordMessage))
+                {
+                    <div class="profile-message @(passwordMessage.Contains("успешно") ? "success" : "error")">
+                        <i class="fas @(passwordMessage.Contains("успешно") ? "fa-check-circle" : "fa-exclamation-circle")"></i>
+                        @passwordMessage
+                    </div>
+                }
+                <button type="submit" class="profile-btn save">
+                    <i class="fas fa-key"></i> Сменить пароль
+                </button>
+            </EditForm>
+        </div>
+
+        <div class="profile-section">
+            <div class="section-header">
+                <i class="fas fa-info-circle"></i>
+                <h4>Информация об аккаунте</h4>
+            </div>
+            <div class="account-info">
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Дата регистрации:</span>
+                    <strong>@(user?.DateRegistered.ToString("dd.MM.yyyy"))</strong>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Статус аккаунта:</span>
+                    <strong class="@(user?.Status == UserStatus.Active ? "status-active" : "status-blocked")">
+                        @(user?.Status == UserStatus.Active ? "Активен" : "Заблокирован")
+                    </strong>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-user-tag"></i>
+                    <span>Роль:</span>
+                    <strong class="@(user?.IsAdmin == true ? "role-admin" : "role-user")">
+                        @(user?.IsAdmin == true ? "Администратор" : "Пользователь")
+                    </strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-center-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f7f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+}
+
+.profile-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 600px;
+    animation: fadeInCard 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 5px 15px rgba(107,175,146,0.3);
+}
+
+.profile-avatar i {
+    font-size: 3rem;
+    color: #fff;
+}
+
+.profile-title {
+    color: #2d4c3c;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.profile-subtitle {
+    color: #666;
+    font-size: 1rem;
+}
+
+.profile-section {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.section-header i {
+    color: #6BAF92;
+    font-size: 1.25rem;
+}
+
+.section-header h4 {
+    color: #2d4c3c;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.profile-field {
+    margin-bottom: 1.25rem;
+}
+
+.profile-field label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #495057;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.profile-field label i {
+    color: #6BAF92;
+}
+
+.profile-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.profile-input:focus {
+    outline: none;
+    border-color: #6BAF92;
+    box-shadow: 0 0 0 3px rgba(107,175,146,0.1);
+}
+
+.profile-input:disabled {
+    background: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.profile-btns {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile-btn i {
+    font-size: 1rem;
+}
+
+.profile-btn.edit {
+    background: #FFA94D;
+    color: #fff;
+}
+
+.profile-btn.save {
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    color: #fff;
+}
+
+.profile-btn.cancel {
+    background: #fff;
+    color: #6BAF92;
+    border: 2px solid #6BAF92;
+}
+
+.profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.profile-message {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.profile-message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.profile-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.account-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.info-item i {
+    color: #6BAF92;
+    font-size: 1.25rem;
+}
+
+.info-item span {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.info-item strong {
+    margin-left: auto;
+    font-weight: 600;
+}
+
+.status-active {
+    color: #28a745;
+}
+
+.status-blocked {
+    color: #dc3545;
+}
+
+.role-admin {
+    color: #6BAF92;
+}
+
+.role-user {
+    color: #6c757d;
+}
+
+@@keyframes fadeInCard {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@@media (max-width: 768px) {
+    .profile-card {
+        padding: 1.5rem;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .profile-avatar i {
+        font-size: 2.5rem;
+    }
+
+    .profile-title {
+        font-size: 1.75rem;
+    }
+
+    .profile-btns {
+        flex-direction: column;
+    }
+
+    .profile-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.profile-page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    margin-top: 1.5rem;
+    animation: fadeInCard 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.profile-page-header h1 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: #2d4c3c;
+    background: linear-gradient(45deg, #6BAF92, #DDB67D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 8px rgba(107,175,146,0.07);
+}
+</style>
+
+@code {
+    private UserModel userModel = new();
+    private PasswordModel passwordModel = new();
+    private bool isEdit = false;
+    private string? passwordMessage;
+    private User? user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetCurrentUserAsync();
+        if (user != null)
+        {
+            userModel.UserName = user.UserName;
+            userModel.Email = user.Email;
+        }
+    }
+
+    private async Task SaveProfile()
+    {
+        var result = await UserService.UpdateUserProfile(userModel.UserName, userModel.Email);
+        if (result)
+        {
+            isEdit = false;
+            user = await UserService.GetCurrentUserAsync();
+        }
+        else
+        {
+            passwordMessage = "Ошибка при обновлении профиля";
+        }
+    }
+
+    private void CancelEdit()
+    {
+        isEdit = false;
+        if (user != null)
+        {
+            userModel.UserName = user.UserName;
+            userModel.Email = user.Email;
+        }
+    }
+
+    private async Task ChangePassword()
+    {
+        if (passwordModel.NewPassword != passwordModel.ConfirmPassword)
+        {
+            passwordMessage = "Пароли не совпадают";
+            return;
+        }
+
+        var result = await UserService.ChangePassword(passwordModel.OldPassword, passwordModel.NewPassword);
+        if (result)
+        {
+            passwordMessage = "Пароль успешно изменён";
+            passwordModel = new PasswordModel();
+        }
+        else
+        {
+            passwordMessage = "Ошибка при смене пароля";
+        }
+    }
+
+    public class UserModel
+    {
+        [Required(ErrorMessage = "Введите имя пользователя")]
+        public string UserName { get; set; } = "";
+        
+        [Required(ErrorMessage = "Введите email")]
+        [EmailAddress(ErrorMessage = "Введите корректный email")]
+        public string Email { get; set; } = "";
+    }
+
+    public class PasswordModel
+    {
+        [Required(ErrorMessage = "Введите старый пароль")]
+        public string OldPassword { get; set; } = "";
+        
+        [Required(ErrorMessage = "Введите новый пароль")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Пароль должен быть от 6 до 100 символов")]
+        public string NewPassword { get; set; } = "";
+        
+        [Required(ErrorMessage = "Подтвердите новый пароль")]
+        public string ConfirmPassword { get; set; } = "";
+    }
+} 

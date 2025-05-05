@@ -1,0 +1,286 @@
+@inject NavigationManager NavigationManager
+
+
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section brand">
+            <div class="footer-logo">
+                <img src="/images/logo.png" alt="AgroPetro" />
+                <span>AgroPetro</span>
+            </div>
+            <p class="footer-description">
+                Инновационная платформа для анализа и прогнозирования урожайности зерновых культур
+            </p>
+            <div class="social-links">
+                <a href="https://github.com" target="_blank" class="social-link">
+                    <i class="fab fa-github" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;"></i>
+                </a>
+                <a href="https://telegram.org" target="_blank" class="social-link">
+                    <i class="fab fa-telegram" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;"></i>
+                </a>
+                <a href="https://vk.com" target="_blank" class="social-link">
+                    <i class="fab fa-vk" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-section links">
+            <h3>Навигация</h3>
+            <ul>
+                <li><a href="/">Главная</a></li>
+                <li><a href="/yield-by-year">Зерновые культуры</a></li>
+                <li><a href="/analytics">Аналитика</a></li>
+                <li><a href="/about">О нас</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section contact">
+            <h3>Контакты</h3>
+            <ul>
+                <li>
+                    <i class="fas fa-envelope"></i>
+                    <span>agropetro@mail.ru</span>
+                </li>
+                <li>
+                    <i class="fas fa-phone"></i>
+                    <span>+7 (705) 268-33-04</span>
+                </li>
+                <li>
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>г. Петропавловск, ул. Примерная, 12</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="footer-bottom-content">
+            <p>&copy; @DateTime.Now.Year AgroPetro. Все права защищены.</p>
+            <div class="footer-bottom-links">
+                <a href="/privacy">Политика конфиденциальности</a>
+                <a href="/terms">Условия использования</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+.footer {
+    background: linear-gradient(135deg, #2d4c3c 0%, #1a2c23 100%);
+    color: #fff;
+    padding: 4rem 0 0 0;
+    margin-top: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 4rem;
+}
+
+.footer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-start;
+    margin-bottom: 0.7rem;
+}
+
+.footer-logo img {
+    height: 44px;
+    width: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    box-shadow: 0 2px 12px #6BAF9244;
+    padding: 4px;
+    object-fit: contain;
+}
+
+.footer-logo span {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #a8b2b8!important;
+    letter-spacing: 1px;
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    background-clip: unset;
+    text-fill-color: unset;
+}
+
+.footer-description {
+    color: #a8b2b8;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-link i {
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.social-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #6BAF92, #DDB67D);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.social-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(107, 175, 146, 0.3);
+}
+
+.social-link:hover::before {
+    opacity: 1;
+}
+
+.social-link:hover i {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.footer-section h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.footer-section h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, #6BAF92, #DDB67D);
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-section ul li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.footer-section ul li i {
+    color: #6BAF92;
+    font-size: 1rem;
+}
+
+.footer-section a {
+    color: #a8b2b8;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.footer-section a:hover {
+    color: #6BAF92;
+    transform: translateX(5px);
+}
+
+.footer-bottom {
+    margin-top: 4rem;
+    padding: 1.5rem 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.footer-bottom-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-bottom p {
+    color: #a8b2b8;
+    font-size: 0.9rem;
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.footer-bottom-links a {
+    color: #a8b2b8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-bottom-links a:hover {
+    color: #6BAF92;
+}
+
+@@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .footer-bottom-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .footer-bottom-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+</style> 

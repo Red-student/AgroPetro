@@ -14,7 +14,11 @@
 		<PackageReference Include="ExcelDataReader.DataSet" Version="3.7.0" />
 		<PackageReference Include="itext7" Version="7.2.6" />
 		<PackageReference Include="itext7.commons" Version="7.2.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.16" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.16">
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.16" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.16">
 		  <PrivateAssets>all</PrivateAssets>

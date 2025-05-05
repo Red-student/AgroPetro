@@ -73,11 +73,9 @@
         color: var(--white);
         transform: translateX(5px);
     }
-
 .nav-item ::deep a:hover i {
     color: var(--accent-orange);
 }
-
 @media (min-width: 641px) {
     .navbar-toggler {
         display: none;
@@ -111,3 +109,100 @@
         background: var(--accent-orange);
     }
 }
+
+.main-menu {
+    width: 100%;
+    background: var(--primary-green, #325D79);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5vw;
+    min-height: 64px;
+    box-shadow: 0 2px 16px 0 #325D7922;
+    position: relative;
+    z-index: 100;
+}
+.menu-brand {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+}
+.menu-logo {
+    background: none;
+    box-shadow: none;
+    padding: 4px;
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    box-shadow: 0 2px 12px #6BAF9244;
+    border-radius: 50%;
+    height: 44px;
+    width: 44px;
+    object-fit: contain;
+    transition: box-shadow 0.3s;
+}
+.menu-logo:hover {
+    box-shadow: none;
+}
+.menu-list {
+    display: flex;
+    align-items: center;
+    gap: 1.7rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.menu-list li a, .menu-btn {
+    color: #fff;
+    font-size: 1.08rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 12px;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+.menu-list li a:hover, .menu-btn:hover {
+    background: linear-gradient(90deg, #6BAF92 0%, #DDB67D 100%);
+    color: #fff;
+    box-shadow: 0 2px 12px #6BAF9244;
+}
+.menu-list li a.active {
+    background: linear-gradient(90deg, #FFA94D 0%, #6BAF92 100%);
+    color: #fff;
+    box-shadow: 0 2px 12px #FFA94D44;
+}
+@media (max-width: 900px) {
+    .main-menu {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 1vw;
+        min-height: 56px;
+    }
+    .menu-list {
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        justify-content: flex-start;
+    }
+    .menu-logo {
+        height: 38px;
+        width: 38px;
+        padding: 4px;
+    }
+}
+
+.menu-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-left: 0.7rem;
+    color: #fff;
+    
+    letter-spacing: 1px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+

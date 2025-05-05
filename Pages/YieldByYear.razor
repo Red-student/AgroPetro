@@ -9,8 +9,13 @@
 @using iText.Layout.Element
 @using iText.Layout.Properties
 @using iText.Kernel.Colors
+@using OpenEcologyApp.Shared
 @inject GrainHarvestService HarvestService
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject StatisticsService StatisticsService
+
+<AuthRedirect />
 
 <PageTitle>Урожайность по годам</PageTitle>
 
@@ -110,11 +115,21 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Год</th>
-                                    <th>Область</th>
-                                    <th>Урожайность (ц/га)</th>
-                                    <th>Посевная площадь (тыс. га)</th>
-                                    <th>Валовый сбор (тыс. тонн)</th>
+                                    <th style="cursor: pointer" @onclick="@(() => SortByColumn("Year"))">
+                                        Год @GetSortIcon("Year")
+                                    </th>
+                                    <th style="cursor: pointer" @onclick="@(() => SortByColumn("Region"))">
+                                        Область @GetSortIcon("Region")
+                                    </th>
+                                    <th style="cursor: pointer" @onclick="@(() => SortByColumn("Yield"))">
+                                        Урожайность (ц/га) @GetSortIcon("Yield")
+                                    </th>
+                                    <th style="cursor: pointer" @onclick="@(() => SortByColumn("SownArea"))">
+                                        Посевная площадь (тыс. га) @GetSortIcon("SownArea")
+                                    </th>
+                                    <th style="cursor: pointer" @onclick="@(() => SortByColumn("GrossHarvest"))">
+                                        Валовый сбор (тыс. тонн) @GetSortIcon("GrossHarvest")
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -138,6 +153,57 @@
 </div>
 
 <style>
+    .container {
+        animation: pageFadeIn 0.8s ease-out;
+    }
+
+    .row {
+        animation: contentFadeIn 0.8s ease-out 0.2s both;
+    }
+
+    .filter-card {
+        animation: cardSlideUp 0.8s ease-out 0.4s both;
+    }
+
+    .export-card {
+        animation: cardSlideUp 0.8s ease-out 0.6s both;
+    }
+
+    .table-responsive {
+        animation: contentFadeIn 0.8s ease-out 0.8s both;
+    }
+
+    @@keyframes pageFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes cardSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes contentFadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
     .filter-card, .export-card {
         height: 100%;
         min-height: 350px;
@@ -219,12 +285,13 @@
     private string? errorMessage;
     private IBrowserFile? selectedFile;
     private string? successMessage;
-    private bool isImporting;
+    private string currentSortColumn = "Year";
+    private bool isAscending = true;
     
     private IEnumerable<GrainHarvest> filteredData => harvestData
         .Where(x => x.Year >= startYear && x.Year <= endYear)
         .Where(x => string.IsNullOrEmpty(selectedRegion) || x.Region == selectedRegion)
-        .OrderBy(x => x.Year)
+        .OrderBy(x => GetSortProperty(x))
         .ThenBy(x => x.Region);
     
     protected override async Task OnInitializedAsync()
@@ -264,6 +331,7 @@
             var dataUrl = $"data:application/json;base64,{base64}";
 
             await JSRuntime.InvokeVoidAsync("downloadFileFromStream", "grain_harvest_data.json", dataUrl);
+            await StatisticsService.LogExport(NavMenu.CurrentUserId ?? 0, "JSON");
         }
         catch (Exception ex)
         {
@@ -291,7 +359,6 @@
         {
             errorMessage = null;
             successMessage = null;
-            isImporting = true;
             StateHasChanged();
             
             if (selectedFile != null)
@@ -316,11 +383,7 @@
         {
             errorMessage = $"Ошибка при импорте данных: {ex.Message}";
         }
-        finally
-        {
-            isImporting = false;
-            StateHasChanged();
-        }
+        StateHasChanged();
     }
 
     private async Task ExportToExcel()
@@ -328,11 +391,12 @@
         try
         {
             errorMessage = null;
-            var excelData = await ExportToExcelAsync(filteredData);
+            var excelData = ExportToExcelAsync(filteredData);
             var base64 = Convert.ToBase64String(excelData);
             var dataUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
 
             await JSRuntime.InvokeVoidAsync("downloadFileFromStream", "grain_harvest_data.xlsx", dataUrl);
+            await StatisticsService.LogExport(NavMenu.CurrentUserId ?? 0, "Excel");
         }
         catch (Exception ex)
         {
@@ -345,11 +409,12 @@
         try
         {
             errorMessage = null;
-            var csvData = await ExportToCsvAsync(filteredData);
+            var csvData = ExportToCsvAsync(filteredData);
             var base64 = Convert.ToBase64String(csvData);
             var dataUrl = $"data:text/csv;base64,{base64}";
 
             await JSRuntime.InvokeVoidAsync("downloadFileFromStream", "grain_harvest_data.csv", dataUrl);
+            await StatisticsService.LogExport(NavMenu.CurrentUserId ?? 0, "CSV");
         }
         catch (Exception ex)
         {
@@ -479,8 +544,7 @@
             var base64 = Convert.ToBase64String(memoryStream.ToArray());
             var dataUrl = $"data:application/pdf;base64,{base64}";
             await JSRuntime.InvokeVoidAsync("downloadFileFromStream", "grain_harvest_report.pdf", dataUrl);
-
-
+            await StatisticsService.LogReport(NavMenu.CurrentUserId ?? 0, "PDF");
         }
         catch (Exception ex)
         {
@@ -488,7 +552,7 @@
         }
     }
 
-    public async Task<byte[]> ExportToExcelAsync(IEnumerable<GrainHarvest> data)
+    private byte[] ExportToExcelAsync(IEnumerable<GrainHarvest> data)
     {
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Harvest Data");
@@ -529,7 +593,7 @@
         return stream.ToArray();
     }
 
-    public async Task<byte[]> ExportToCsvAsync(IEnumerable<GrainHarvest> data)
+    private byte[] ExportToCsvAsync(IEnumerable<GrainHarvest> data)
     {
         var builder = new StringBuilder();
         builder.AppendLine("Region,Year,Yield,SownArea,GrossHarvest");
@@ -540,5 +604,38 @@
         }
 
         return Encoding.UTF8.GetBytes(builder.ToString());
+    }
+
+    private object GetSortProperty(GrainHarvest item)
+    {
+        return currentSortColumn switch
+        {
+            "Year" => isAscending ? item.Year : -item.Year,
+            "Region" => isAscending ? item.Region : new string(item.Region.Reverse().ToArray()),
+            "Yield" => isAscending ? item.Yield : -item.Yield,
+            "SownArea" => isAscending ? item.SownArea : -item.SownArea,
+            "GrossHarvest" => isAscending ? item.GrossHarvest : -item.GrossHarvest,
+            _ => isAscending ? item.Year : -item.Year
+        };
+    }
+
+    private void SortByColumn(string column)
+    {
+        if (currentSortColumn == column)
+        {
+            isAscending = !isAscending;
+        }
+        else
+        {
+            currentSortColumn = column;
+            isAscending = true;
+        }
+        StateHasChanged();
+    }
+
+    private string GetSortIcon(string column)
+    {
+        if (currentSortColumn != column) return "↕";
+        return isAscending ? "↑" : "↓";
     }
 } 

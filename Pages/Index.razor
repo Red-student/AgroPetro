@@ -2,425 +2,837 @@
 @using OpenEcologyApp.Data
 @inject IHttpClientFactory HttpClientFactory
 
-<PageTitle>Главная - Мониторинг урожая</PageTitle>
+<PageTitle>AgroPetro — современная агроаналитика</PageTitle>
 
-<div class="hero-section">
-    <div class="container">
-        <h1>Мониторинг урожайности зерновых культур</h1>
-        <p class="lead">Комплексная система анализа и отслеживания показателей урожайности</p>
-    </div>
-</div>
-
-<div class="container mt-4">
-    @if (isLoading)
-    {
-        <div class="text-center">
-            <div class="spinner-border" role="status" style="color: #6BAF92;">
-                <span class="visually-hidden">Загрузка...</span>
-            </div>
+<div class="home-root">
+    <!-- HERO SECTION -->
+    <section class="home-hero animate-fade-in">
+        <div class="home-hero-bg">
+            <!-- Абстрактные фигуры -->
+            <svg class="hero-abs hero-abs-1" width="220" height="220"><circle cx="110" cy="110" r="110" fill="url(#heroAbs1)" opacity="0.18"/></svg>
+            <svg class="hero-abs hero-abs-2" width="120" height="120"><ellipse cx="60" cy="60" rx="60" ry="40" fill="url(#heroAbs2)" opacity="0.13"/></svg>
         </div>
-    }
-    else if (error != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            @error
-        </div>
-    }
-    else
-    {
-        <div class="row g-4">
-            <!-- Блок статистики -->
-            <div class="col-md-8">
-                <div class="stats-card">
-                    <h2>Ключевые показатели</h2>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="metric-card">
-                                <i class="fas fa-chart-line"></i>
-                                <div class="metric-content">
-                                    <h3>Средняя урожайность</h3>
-                                    <p class="stat-value">@averageYield.ToString("F1") ц/га</p>
-                                    <span class="trend-up">+2.3% с прошлого года</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="metric-card">
-                                <i class="fas fa-map-marked-alt"></i>
-                                <div class="metric-content">
-                                    <h3>Общая площадь</h3>
-                                    <p class="stat-value">@totalArea.ToString("N0") тыс. га</p>
-                                    <span class="trend-up">+5.1% к плану</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="metric-card">
-                                <i class="fas fa-warehouse"></i>
-                                <div class="metric-content">
-                                    <h3>Валовый сбор</h3>
-                                    <p class="stat-value">@totalHarvest.ToString("N0") тыс. т</p>
-                                    <span class="trend-up">+12% с прошлого года</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="home-hero-content">
+            <div class="home-hero-center">
+                <h1 class="gradient-text hero-title-shadow">AgroPetro</h1>
+                <p class="home-hero-lead animate-slide-up">Современная платформа для мониторинга и аналитики урожайности зерновых культур</p>
+                <a href="/grain-data" class="home-hero-btn animate-pop">
+                    <i class="fas fa-rocket"></i> Попробовать бесплатно
+                </a>
 
-            <!-- Блок быстрых действий -->
-            <div class="col-md-4">
-                <div class="quick-actions-card">
-                    <h2>Быстрые действия</h2>
-                    <div class="action-buttons">
-                        <a href="/grain-data" class="action-button">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Зерновые данные</span>
-                        </a>
-                        <a href="/analytics" class="action-button">
-                            <i class="fas fa-file-alt"></i>
-                            <span>Аналитика</span>
-                        </a>
-                        <a href="/yield-by-year" class="action-button">
-                            <i class="fas fa-map"></i>
-                            <span>Отчеты</span>
-                        </a>
-                    </div>
-                </div>
             </div>
-
-            <!-- Блок последних обновлений -->
-            <div class="col-md-8">
-                <div class="updates-card">
-                    <h2>Последние обновления</h2>
-                    <div class="updates-list">
-                        <div class="update-item">
-                            <div class="update-icon">
-                                <i class="fas fa-sync"></i>
-                            </div>
-                            <div class="update-content">
-                                <h4>Обновление данных по урожайности</h4>
-                                <p>Добавлены новые данные по урожайности за последний квартал</p>
-                                <span class="update-time">2 часа назад</span>
-                            </div>
-                        </div>
-                        <div class="update-item">
-                            <div class="update-icon">
-                                <i class="fas fa-chart-pie"></i>
-                            </div>
-                            <div class="update-content">
-                                <h4>Новый аналитический отчет</h4>
-                                <p>Доступен сравнительный анализ показателей за 2022-2023 годы</p>
-                                <span class="update-time">1 день назад</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Блок уведомлений -->
-            <div class="col-md-4">
-                <div class="notifications-card">
-                    <h2>Уведомления</h2>
-                    <div class="notifications-list">
-                        <div class="notification-item priority-high">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <div class="notification-content">
-                                <h4>Отклонение от плана</h4>
-                                <p>Выявлено отклонение от плана в Южном регионе</p>
-                            </div>
-                        </div>
-                        <div class="notification-item priority-medium">
-                            <i class="fas fa-clock"></i>
-                            <div class="notification-content">
-                                <h4>Обновление системы</h4>
-                                <p>Плановое обновление системы сегодня в 23:00</p>
-                            </div>
-                        </div>
+            <div class="home-hero-visual">
+                <div class="hero-mockup-wrap">
+                    <svg class="hero-mockup" viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="20" width="300" height="140" rx="18" fill="#fff" stroke="#DDB67D" stroke-width="3"/>
+                        <rect x="30" y="40" width="260" height="100" rx="12" fill="#f7f9fa"/>
+                        <polyline points="50,120 90,90 130,110 170,70 210,100 250,60 280,80" fill="none" stroke="#6BAF92" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="90" cy="90" r="6" fill="#6BAF92"/>
+                        <circle cx="170" cy="70" r="6" fill="#FFA94D"/>
+                        <circle cx="250" cy="60" r="6" fill="#4FC3F7"/>
+                        <rect x="10" y="170" width="300" height="18" rx="6" fill="#DDB67D"/>
+                    </svg>
+                    <div class="hero-fact animate-pop">
+                        <div class="hero-fact-num">15+</div>
+                        <div class="hero-fact-label">регионов</div>
                     </div>
                 </div>
             </div>
         </div>
-    }
-</div>
+        <svg class="section-wave" viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,0 C480,100 960,0 1440,100 L1440,100 L0,100 Z" fill="#fff"/></svg>
+        <svg width="0" height="0">
+            <defs>
+                <linearGradient id="heroAbs1" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#6BAF92"/>
+                    <stop offset="100%" stop-color="#FFA94D"/>
+                </linearGradient>
+                <linearGradient id="heroAbs2" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#4FC3F7"/>
+                    <stop offset="100%" stop-color="#DDB67D"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </section>
 
-<div class="bg-light py-5">
-    <div class="container">
-        <h2 class="text-center mb-4" style="color: var(--primary-color);">Почему это важно?</h2>
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="d-flex">
-                    <div class="flex-shrink-0">
-                        <i class="fas fa-seedling fa-2x me-3" style="color: var(--primary-color);"></i>
-                    </div>
-                    <div>
-                        <h4>Развитие сельского хозяйства</h4>
-                        <p>Мониторинг урожайности помогает выявлять эффективные методы ведения сельского хозяйства и способствует развитию отрасли</p>
-                    </div>
-                </div>
+    <!-- ПРЕИМУЩЕСТВА -->
+    <section class="home-features animate-fade-in-delay">
+        <h2 class="home-section-title">Почему выбирают нас?</h2>
+        <div class="home-features-list">
+            <div class="home-feature-card feature1 animate-slide-in">
+                <span class="feature-decor"><svg width="60" height="60"><circle cx="30" cy="30" r="30" fill="url(#feature1)"/></svg></span>
+                <i class="fas fa-database"></i>
+                <h4>Достоверные данные</h4>
+                <p>Только официальные источники и регулярные обновления</p>
             </div>
-            <div class="col-md-6 mb-4">
-                <div class="d-flex">
-                    <div class="flex-shrink-0">
-                        <i class="fas fa-chart-pie fa-2x me-3" style="color: var(--primary-color);"></i>
-                    </div>
-                    <div>
-                        <h4>Планирование производства</h4>
-                        <p>Анализ данных позволяет эффективно планировать производство и распределение ресурсов</p>
-                    </div>
-                </div>
+            <div class="home-feature-card feature2 animate-slide-in" style="animation-delay:0.1s;">
+                <span class="feature-decor"><svg width="60" height="60"><circle cx="30" cy="30" r="30" fill="url(#feature2)"/></svg></span>
+                <i class="fas fa-chart-line"></i>
+                <h4>Глубокая аналитика</h4>
+                <p>Интерактивные графики и сравнения по регионам и годам</p>
+            </div>
+            <div class="home-feature-card feature3 animate-slide-in" style="animation-delay:0.2s;">
+                <span class="feature-decor"><svg width="60" height="60"><circle cx="30" cy="30" r="30" fill="url(#feature3)"/></svg></span>
+                <i class="fas fa-bolt"></i>
+                <h4>Быстрый старт</h4>
+                <p>Данные доступны сразу после регистрации</p>
+            </div>
+            <div class="home-feature-card feature4 animate-slide-in" style="animation-delay:0.3s;">
+                <span class="feature-decor"><svg width="60" height="60"><circle cx="30" cy="30" r="30" fill="url(#feature4)"/></svg></span>
+                <i class="fas fa-mobile-alt"></i>
+                <h4>Адаптивность</h4>
+                <p>Работает на любом устройстве — от смартфона до ПК</p>
             </div>
         </div>
-    </div>
-</div>
+        <svg class="section-wave" viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,100 C480,0 960,100 1440,0 L1440,100 L0,100 Z" fill="var(--main-bg)"/></svg>
+    </section>
 
-<div class="container my-5">
-    <div class="row align-items-center">
-        <div class="col-md-6">
-            <h2 style="color: var(--primary-color);">Начните работу прямо сейчас</h2>
-            <p class="lead">Получите доступ к актуальным данным об урожайности зерновых культур в Казахстане</p>
-            <ul class="list-unstyled">
-                <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--primary-color);"></i>Детальная статистика по регионам</li>
-                <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--primary-color);"></i>Исторические данные с 2004 года</li>
-                <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--primary-color);"></i>Удобный интерфейс для анализа</li>
-            </ul>
-            <a href="/grain-data" class="btn btn-primary btn-lg mt-3">Перейти к данным</a>
+    <!-- КАК ЭТО РАБОТАЕТ -->
+    <section class="home-how animate-fade-in-delay2">
+        <h2 class="home-section-title">Как это работает?</h2>
+        <div class="home-steps-list">
+            <div class="home-step-card animate-slide-in">
+                <div class="home-step-num" style="background: linear-gradient(135deg, #FFA94D 0%, #6BAF92 100%);">1</div>
+                <i class="fas fa-user-plus" style="color:#FFA94D;"></i>
+                <h5>Регистрация</h5>
+                <p>Создайте аккаунт за 1 минуту</p>
+            </div>
+            <div class="home-step-card animate-slide-in" style="animation-delay:0.1s;">
+                <div class="home-step-num" style="background: linear-gradient(135deg, #4FC3F7 0%, #DDB67D 100%);">2</div>
+                <i class="fas fa-database" style="color:#4FC3F7;"></i>
+                <h5>Доступ к данным</h5>
+                <p>Получите доступ к актуальной базе по урожайности</p>
+            </div>
+            <div class="home-step-card animate-slide-in" style="animation-delay:0.2s;">
+                <div class="home-step-num" style="background: linear-gradient(135deg, #325D79 0%, #FFA94D 100%);">3</div>
+                <i class="fas fa-chart-bar" style="color:#325D79;"></i>
+                <h5>Анализируйте</h5>
+                <p>Используйте фильтры, графики и отчёты для принятия решений</p>
+            </div>
         </div>
-        <div class="col-md-6 text-center">
-            <img src="/images/img1.jpg" alt="Мониторинг урожайности" 
-                 class="feature-image"
-                 onerror="this.onerror=null; this.src='/images/fallback.jpg';">
+        <svg class="section-wave" viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,0 C480,100 960,0 1440,100 L1440,100 L0,100 Z" fill="url(#cta-gradient)"/></svg>
+    </section>
+
+    <!-- Новый CTA-блок -->
+    <section class="home-cta-new animate-fade-in-delay3">
+        <div class="cta-wave-top-new">
+            <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style="display:block;width:100%;height:80px;"><path d="M0,0 C480,80 960,0 1440,80 L1440,80 L0,80 Z" fill="#fff"/></svg>
         </div>
-    </div>
+        <div class="home-cta-new-content">
+            <h2>Присоединяйтесь к AgroPetro!</h2>
+            <p>Получите пожизненный доступ к аналитике и данным по урожайности — бесплатно и без ограничений.</p>
+            <a href="/register" class="home-cta-new-btn animate-pop"><i class="fas fa-user-plus"></i> Зарегистрироваться</a>
+            <div class="cta-mini-fact-new animate-fade-in-delay2"><i class="fas fa-lock"></i> Доступ навсегда</div>
+        </div>
+    </section>
 </div>
 
 <style>
-    .hero-section {
-        background: linear-gradient(135deg, var(--primary-green) 0%, var(--data-blue) 100%);
-        padding: 3rem 0;
-        margin-bottom: 2rem;
-        color: var(--white);
-        box-shadow: var(--shadow-md);
-    }
+:root {
+    --main-bg: #f7f9fa;
+    --main-green: #6BAF92;
+    --main-blue: #325D79;
+    --main-wheat: #DDB67D;
+    --main-orange: #FFA94D;
+    --main-cyan: #4FC3F7;
+    --main-gradient: linear-gradient(135deg, #6BAF92 0%, #325D79 100%);
+}
 
-    .hero-section h1 {
-        color: var(--white);
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        text-align: center;
-    }
+.gradient-text {
+    background: linear-gradient(90deg, #6BAF92 0%, #FFA94D 40%, #4FC3F7 80%, #DDB67D 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    filter: drop-shadow(0 2px 16px #6BAF9244);
+}
 
-    .hero-section .lead {
-        color: var(--secondary-beige);
-        font-size: 1.2rem;
-        opacity: 0.9;
-        text-align: center;
-    }
+.cta-gradient-text {
+    background: linear-gradient(90deg, #FFA94D 0%, #6BAF92 60%, #4FC3F7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
 
-    /* Общие стили для карточек */
-    .stats-card,
-    .quick-actions-card,
-    .updates-card,
-    .notifications-card {
-        background-color: var(--white);
-        border-radius: 12px;
-        padding: 1.5rem;
-        height: 100%;
-        box-shadow: var(--shadow-md);
-        border: 1px solid rgba(0,0,0,0.05);
-    }
+.hero-decor {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    animation: decorFloat 7s ease-in-out infinite alternate;
+}
+.hero-decor-1 {
+    top: 8%; left: 4%;
+    animation-delay: 0s;
+}
+.hero-decor-2 {
+    bottom: 10%; right: 7%;
+    animation-delay: 2s;
+}
+@@keyframes decorFloat {
+    from { transform: translateY(0) scale(1); }
+    to { transform: translateY(-18px) scale(1.08); }
+}
 
-    .stats-card:hover,
-    .quick-actions-card:hover,
-    .updates-card:hover,
-    .notifications-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-lg);
-    }
+.feature-decor {
+    position: absolute;
+    top: -22px; left: -22px;
+    z-index: 1;
+    opacity: 0.22;
+    pointer-events: none;
+    filter: blur(1px);
+}
 
-    /* Стили для метрик */
-    .metric-card {
-        background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-beige) 100%);
-        color: var(--white);
-        border-radius: 10px;
-        padding: 1.2rem;
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        box-shadow: var(--shadow-sm);
-        transition: var(--transition-base);
-    }
+.home-feature-card {
+    position: relative;
+    overflow: visible;
+}
+.feature1 { background: linear-gradient(135deg, #6BAF92 0%, #FFA94D 100%) !important; }
+.feature2 { background: linear-gradient(135deg, #4FC3F7 0%, #DDB67D 100%) !important; }
+.feature3 { background: linear-gradient(135deg, #FFA94D 0%, #6BAF92 100%) !important; }
+.feature4 { background: linear-gradient(135deg, #325D79 0%, #4FC3F7 100%) !important; }
 
-    .metric-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
-    }
+.home-feature-card i {
+    position: relative;
+    z-index: 2;
+}
 
-    .metric-card .metric-content h3,
-    .metric-card .metric-value {
-        color: var(--white);
-    }
+.home-feature-card:hover {
+    box-shadow: 0 24px 64px 0 #FFA94D33, 0 2px 12px 0 #4FC3F733;
+    transform: translateY(-12px) scale(1.08) rotate(-2deg);
+    transition: box-shadow 0.3s, transform 0.3s;
+}
 
-    .metric-content {
-        flex: 1;
-    }
+.home-step-num {
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.45rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem auto;
+    box-shadow: 0 2px 8px rgba(107,175,146,0.13);
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    transition: background 0.3s;
+}
 
-    .metric-content h3 {
-        color: var(--text-primary);
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-    }
+.home-step-card:hover .home-step-num {
+    filter: brightness(1.15) drop-shadow(0 2px 8px #FFA94D88);
+    background: linear-gradient(135deg, #FFA94D 0%, #4FC3F7 100%);
+}
 
-    .metric-value {
-        color: var(--data-blue);
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 0.3rem;
-    }
+.home-step-card i {
+    font-size: 2.3rem;
+    margin-bottom: 0.9rem;
+    transition: color 0.3s;
+}
 
-    /* Стили для быстрых действий */
-    .action-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
+.home-step-card:hover i {
+    color: #FFA94D !important;
+}
 
-    .action-button {
-        background-color: var(--bg-light);
-        color: var(--text-primary);
-        padding: 1rem;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        transition: var(--transition-base);
-    }
+.home-cta {
+    position: relative;
+    overflow: visible;
+}
+.cta-decor {
+    position: absolute;
+    right: 5%;
+    bottom: 10%;
+    z-index: 1;
+    pointer-events: none;
+    animation: decorFloat 8s ease-in-out infinite alternate;
+}
 
-    .action-button:hover {
-        background-color: var(--primary-green);
-        color: var(--white);
-        transform: translateX(5px);
-    }
+.animate-fade-in {
+    animation: fadeIn 1.1s cubic-bezier(0.4,0,0.2,1);
+}
+.animate-fade-in-delay {
+    animation: fadeIn 1.1s cubic-bezier(0.4,0,0.2,1) 0.3s both;
+}
+.animate-fade-in-delay2 {
+    animation: fadeIn 1.1s cubic-bezier(0.4,0,0.2,1) 0.6s both;
+}
+.animate-fade-in-delay3 {
+    animation: fadeIn 1.1s cubic-bezier(0.4,0,0.2,1) 0.9s both;
+}
+.animate-slide-in {
+    animation: slideInUp 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.animate-pop {
+    animation: popIn 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.animate-slide-up {
+    animation: slideUp 1s cubic-bezier(0.4,0,0.2,1);
+}
 
-    .action-button i {
-        font-size: 1.2rem;
-        color: var(--primary-green);
-    }
+@@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(40px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@@keyframes popIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+@@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    .action-button:hover i {
-        color: var(--white);
-    }
+.home-root {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--main-bg);
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
 
-    /* Стили для обновлений */
-    .updates-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
+.section-wave {
+    display: block;
+    width: 100%;
+    height: 100px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 2;
+}
 
-    .update-item {
-        display: flex;
-        gap: 1rem;
-        padding: 1rem;
-        background-color: var(--bg-light);
-        border-radius: 8px;
-        transition: var(--transition-base);
-    }
+.home-hero {
+    min-height: 100vh;
+    width: 100%;
+    background: none;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    align-items: stretch;
+    justify-content: stretch;
+    z-index: 10;
+}
 
-    .update-item:hover {
-        background-color: var(--secondary-beige);
-        transform: translateX(5px);
-    }
+.home-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #6BAF92 0%, #325D79 100%), url('/images/hero-bg.jpg') center/cover no-repeat;
+    z-index: 1;
+    opacity: 0.93;
+    filter: blur(0.5px);
+    overflow: hidden;
+}
 
-    .update-icon {
-        background-color: var(--white);
-        color: var(--primary-green);
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: var(--shadow-sm);
-    }
+.home-hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
 
-    .update-content h4 {
-        color: var(--text-primary);
-        font-size: 1rem;
-        margin-bottom: 0.3rem;
-    }
+.home-hero-center {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    max-width: 700px;
+    color: #fff;
+    text-align: left;
+    background: rgba(44, 62, 80, 0.38);
+    border-radius: 36px;
+    box-shadow: 0 16px 64px 0 rgba(50,93,121,0.22), 0 2px 12px 0 rgba(107,175,146,0.13);
+    animation: homeHeroFadeIn 1.1s cubic-bezier(0.4,0,0.2,1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 4rem 2.5rem 4rem 2.5rem;
+    margin-right: 2vw;
+}
 
-    .update-content p {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        margin-bottom: 0.3rem;
-    }
+.home-hero-center h1 {
+    font-size: 4.2rem;
+    font-weight: 900;
+    margin: 0 0 1.2rem 0;
+    letter-spacing: 1.7px;
+    line-height: 1.08;
+    text-shadow: 0 2px 24px rgba(50,93,121,0.18);
+}
 
-    .update-time {
-        color: var(--text-secondary);
-        font-size: 0.8rem;
-    }
+.home-hero-lead {
+    font-size: 1.7rem;
+    margin: 0 0 2.5rem 0;
+    color: #fff;
+    opacity: 0.98;
+    text-shadow: 0 1px 12px rgba(50,93,121,0.13);
+}
 
-    /* Стили для уведомлений */
-    .notifications-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
+.home-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 18px;
+    padding: 1.3rem 3rem;
+    font-size: 1.5rem;
+    text-decoration: none;
+    box-shadow: 0 6px 32px rgba(107,175,146,0.23), 0 0 16px 2px #FFA94D55;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+    letter-spacing: 0.7px;
+    position: relative;
+    overflow: hidden;
+}
 
-    .notification-item {
-        display: flex;
-        gap: 1rem;
-        padding: 1rem;
-        border-radius: 8px;
-        transition: var(--transition-base);
-    }
+.home-hero-btn i {
+    font-size: 1.2em;
+    margin-right: 0.3em;
+    filter: drop-shadow(0 2px 8px #FFA94D88);
+}
 
-    .notification-item.priority-high {
-        background-color: #FFE8E8;
-    }
+.home-hero-btn:hover {
+    background: linear-gradient(135deg, #DDB67D 0%, #6BAF92 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.06);
+    box-shadow: 0 12px 48px rgba(107,175,146,0.28), 0 0 32px 4px #FFA94D77;
+}
 
-    .notification-item.priority-medium {
-        background-color: #FFF8E7;
+@@keyframes homeHeroFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
     }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
 
-    .notification-item i {
-        color: var(--primary-green);
-    }
+.home-features {
+    width: 100vw;
+    margin: 0;
+    padding: 5rem 0 4rem 0;
+    background: #fff;
+    position: relative;
+    z-index: 3;
+}
 
-    .notification-content h4 {
-        color: var(--text-primary);
-        font-size: 1rem;
-        margin-bottom: 0.3rem;
-    }
+.home-section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #325D79;
+    margin-bottom: 3.2rem;
+    letter-spacing: 0.6px;
+}
 
-    .notification-content p {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        margin-bottom: 0;
-    }
+.home-features-list {
+    width: 100vw;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2vw;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2.7rem;
+    box-sizing: border-box;
+}
 
-    /* Утилиты */
-    .trend-up, .trend-down, .trend-neutral {
-        color: var(--white);
-        background-color: rgba(255, 255, 255, 0.2);
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-    }
+.home-feature-card {
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    border-radius: 28px;
+    box-shadow: 0 8px 32px rgba(107,175,146,0.13);
+    padding: 2.7rem 2rem 2.2rem 2rem;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    animation: homeHeroFadeIn 0.8s cubic-bezier(0.4,0,0.2,1);
+    cursor: pointer;
+}
 
-    /* Дополнительные тени */
-    :root {
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
+.home-feature-card i {
+    font-size: 3.1rem;
+    color: #fff;
+    margin-bottom: 1.3rem;
+    filter: drop-shadow(0 2px 8px #6BAF92aa);
+    transition: transform 0.3s;
+}
 
-    .feature-image {
-        width: 400px;
-        height: 300px;
-        object-fit: cover;
-        border-radius: 12px;
-        box-shadow: var(--shadow-md);
-    }
+.home-feature-card:hover {
+    transform: translateY(-10px) scale(1.07);
+    box-shadow: 0 16px 64px rgba(107,175,146,0.18);
+}
+
+.home-feature-card:hover i {
+    transform: scale(1.18) rotate(-6deg);
+}
+
+.home-feature-card h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.9rem;
+    color: #fff;
+    letter-spacing: 0.2px;
+}
+
+.home-feature-card p {
+    color: #f7f9fa;
+    font-size: 1.13rem;
+    margin-bottom: 0;
+}
+
+.home-how {
+    width: 100vw;
+    margin: 0;
+    padding: 5rem 0 4rem 0;
+    background: var(--main-bg);
+    position: relative;
+    z-index: 4;
+}
+
+.home-steps-list {
+    width: 100vw;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2vw;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2.7rem;
+    box-sizing: border-box;
+}
+
+.home-step-card {
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 4px 24px rgba(107,175,146,0.10);
+    padding: 2.5rem 1.5rem 2rem 1.5rem;
+    text-align: center;
+    color: #325D79;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    animation: homeHeroFadeIn 0.8s cubic-bezier(0.4,0,0.2,1);
+    cursor: pointer;
+}
+
+.home-step-num {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.45rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem auto;
+    box-shadow: 0 2px 8px rgba(107,175,146,0.13);
+}
+
+.home-step-card i {
+    font-size: 2.3rem;
+    color: #6BAF92;
+    margin-bottom: 0.9rem;
+}
+
+.home-step-card h5 {
+    font-size: 1.18rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+}
+
+.home-step-card p {
+    color: #325D79;
+    font-size: 1.09rem;
+    margin-bottom: 0;
+}
+
+.home-step-card:hover {
+    transform: translateY(-7px) scale(1.06);
+    box-shadow: 0 12px 48px rgba(107,175,146,0.13);
+}
+
+.home-cta {
+    position: relative;
+    overflow: visible;
+    background: linear-gradient(135deg, #FFA94D 0%, #6BAF92 100%);
+}
+.cta-wave-top {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 2;
+}
+.cta-title-shadow {
+    text-shadow: 0 8px 32px #FFA94D99, 0 2px 12px #6BAF9266;
+}
+.home-cta-content {
+    width: 100vw;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2vw;
+    text-align: center;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.home-cta-content h2 {
+    font-size: 2.3rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    color: #1a2d1a !important;
+    text-shadow: 0 4px 24px #fff, 0 2px 8px #6BAF92cc;
+    background: none;
+    border-radius: 0;
+    padding: 0;
+    display: inline-block;
+}
+
+.home-cta-content p {
+    font-size: 1.22rem;
+    margin-bottom: 2.3rem;
+}
+
+.home-cta-btn {
+    padding: 0.7rem 1.5rem !important;
+    font-size: 1rem !important;
+    border-radius: 18px !important;
+    background: linear-gradient(90deg, #6BAF92 0%, #4FC3F7 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 12px #6BAF9244;
+}
+
+.home-cta-btn:hover {
+    background: linear-gradient(90deg, #325D79 0%, #6BAF92 100%) !important;
+    color: #fff !important;
+}
+
+.cta-mini-fact {
+    margin-top: 2.2rem;
+    font-size: 1.08rem;
+    color: #fff;
+    opacity: 0.93;
+    font-weight: 600;
+    text-shadow: 0 2px 8px #325D7944;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    background: rgba(255,255,255,0.10);
+    border-radius: 12px;
+    padding: 0.6em 1.2em;
+    box-shadow: 0 2px 8px #6BAF9244;
+}
+
+.cta-mini-fact i {
+    font-size: 1.1em;
+    color: #6BAF92;
+    margin-right: 0.3em;
+}
+
+/* Сбросить отступы main только на главной */
+main {
+    padding: 0 !important;
+    background: transparent !important;
+}
+article.content {
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.hero-mockup-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    min-width: 0;
+}
+.hero-mockup {
+    width: 320px;
+    max-width: 38vw;
+    height: auto;
+    box-shadow: 0 8px 32px #4FC3F755;
+    border-radius: 18px;
+    background: #fff;
+    z-index: 2;
+}
+.hero-fact {
+    position: absolute;
+    right: -32px;
+    bottom: -32px;
+    background: linear-gradient(135deg, #FFA94D 0%, #6BAF92 100%);
+    color: #fff;
+    border-radius: 50%;
+    width: 78px;
+    height: 78px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 24px #FFA94D44;
+    font-weight: 700;
+    font-size: 1.1rem;
+    z-index: 3;
+    border: 4px solid #fff;
+    animation: popIn 0.8s cubic-bezier(0.4,0,0.2,1) 0.5s both;
+}
+.hero-fact-num {
+    font-size: 1.7rem;
+    font-weight: 900;
+    line-height: 1;
+}
+.hero-fact-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    opacity: 0.93;
+    margin-top: 2px;
+}
+.hero-abs {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    animation: decorFloat 7s ease-in-out infinite alternate;
+}
+.hero-abs-1 {
+    top: 8%; left: 4%;
+    animation-delay: 0s;
+}
+.hero-abs-2 {
+    bottom: 10%; right: 7%;
+    animation-delay: 2s;
+}
+.hero-title-shadow {
+    text-shadow: 0 8px 32px #4FC3F799, 0 2px 12px #DDB67D66;
+}
+
+.home-features,
+.home-features-list,
+.home-how,
+.home-steps-list,
+.home-cta-content {
+    width: 100% !important;
+    max-width: 1400px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.home-cta-new {
+    position: relative;
+    background: linear-gradient(135deg, #FFA94D 0%, #6BAF92 100%);
+    margin-bottom: 0;
+    border-radius: 0;
+}
+.cta-wave-top-new {
+    position: absolute;
+    top: -80px;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+}
+.cta-wave-bottom-new { display: none; }
+.home-cta-new-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 4.5rem 2vw 3.5rem 2vw;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    z-index: 3;
+}
+.home-cta-new-content h2 {
+    font-size: 2.3rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    color: #fff;
+}
+.home-cta-new-content p {
+    font-size: 1.22rem;
+    margin-bottom: 2.3rem;
+    color: #fff;
+    opacity: 0.98;
+}
+.home-cta-new-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 18px;
+    padding: 0.7rem 1.5rem;
+    font-size: 1.1rem;
+    text-decoration: none;
+    box-shadow: 0 2px 12px #6BAF9244;
+    transition: background 0.3s, color 0.3s, transform 0.3s;
+    letter-spacing: 0.7px;
+    position: relative;
+    overflow: hidden;
+}
+.home-cta-new-btn i {
+    font-size: 1.2em;
+    margin-right: 0.3em;
+    filter: drop-shadow(0 2px 8px #FFA94D88);
+}
+.home-cta-new-btn:hover {
+    background: linear-gradient(135deg, #DDB67D 0%, #6BAF92 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.06);
+    box-shadow: 0 8px 32px #6BAF9244;
+}
+.cta-mini-fact-new {
+    margin-top: 2.2rem;
+    font-size: 1.08rem;
+    color: #fff;
+    opacity: 0.93;
+    font-weight: 600;
+    text-shadow: 0 2px 8px #325D7944;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    background: rgba(255,255,255,0.10);
+    border-radius: 12px;
+    padding: 0.6em 1.2em;
+    margin-left: 10px;
+    box-shadow: 0 2px 8px #6BAF9244;
+}
+.cta-mini-fact-new i {
+    font-size: 1.1em;
+    color: #6BAF92;
+    margin-right: 0.3em;
+}
+/* Исправление анимаций и hover, чтобы не было обрезки и скролла */
+.home-feature-card,
+.home-step-card {
+    will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+.home-feature-card:hover,
+.home-step-card:hover {
+    z-index: 3;
+}
+.home-features-list,
+.home-steps-list {
+    overflow: visible !important;
+}
 </style>
 
 @code {

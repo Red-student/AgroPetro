@@ -411,4 +411,49 @@ function initializeComparisonChart(regions, period1Yields, period2Yields, period
     } catch (error) {
         console.error('Ошибка при создании графика сравнения:', error);
     }
+}
+
+// График для панели администратора: экспорты и отчёты по дням
+function createAdminStatsChart(data) {
+    const ctx = document.getElementById('adminStatsChart');
+    if (!ctx) return;
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [
+                {
+                    label: 'Экспортов',
+                    data: data.exports,
+                    borderColor: '#4e8c77',
+                    backgroundColor: 'rgba(78,140,119,0.1)',
+                    tension: 0.2,
+                    fill: true
+                },
+                {
+                    label: 'Отчётов',
+                    data: data.reports,
+                    borderColor: '#e57373',
+                    backgroundColor: 'rgba(229,115,115,0.1)',
+                    tension: 0.2,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Динамика экспортов и отчётов по дням',
+                    color: '#2d4c3c'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 } 

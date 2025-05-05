@@ -1,0 +1,227 @@
+@page "/admin"
+@layout AdminLayout
+@using OpenEcologyApp.Services
+@inject StatisticsService StatisticsService
+@inject IJSRuntime JSRuntime
+
+<div class="admin-dashboard">
+    <h2 class="page-title">Панель управления</h2>
+
+    <div class="admin-dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-title">Пользователей</div>
+                <div class="stat-value">@(stats?.UsersCount ?? 0)</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-file-export"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-title">Экспортов данных</div>
+                <div class="stat-value">@(stats?.ExportsCount ?? 0)</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-title">Отчётов</div>
+                <div class="stat-value">@(stats?.ReportsCount ?? 0)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-dashboard-chart">
+        <h3 class="chart-title">Статистика за последние 30 дней</h3>
+        <canvas id="adminStatsChart"></canvas>
+    </div>
+</div>
+
+<style>
+.admin-dashboard {
+    padding: 24px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-title {
+    color: #2d4c3c;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 32px;
+    animation: slideInLeft 0.5s ease-out;
+}
+
+@@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.admin-dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.5s ease-out;
+    animation-fill-mode: both;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+@@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.stat-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #4e8c77 0%, #2d4c3c 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+    transform: rotate(10deg) scale(1.1);
+}
+
+.stat-icon i {
+    font-size: 1.5rem;
+    color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover .stat-icon i {
+    transform: scale(1.1);
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-title {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 4px;
+    transition: color 0.3s ease;
+}
+
+.stat-card:hover .stat-title {
+    color: #4e8c77;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d4c3c;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover .stat-value {
+    transform: scale(1.05);
+}
+
+.admin-dashboard-chart {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 32px;
+    animation: slideInUp 0.5s ease-out;
+    animation-delay: 0.4s;
+    animation-fill-mode: both;
+}
+
+@@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chart-title {
+    color: #2d4c3c;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    animation: fadeIn 0.5s ease-out;
+    animation-delay: 0.5s;
+    animation-fill-mode: both;
+}
+</style>
+
+@code {
+    private AdminStatsDto? stats;
+    private List<DailyStatsDto> dailyStats = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        stats = await StatisticsService.GetAdminStats();
+        dailyStats = await StatisticsService.GetDailyStats(30);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && dailyStats.Any())
+        {
+            var chartData = new {
+                labels = dailyStats.Select(x => x.Date.ToString("dd.MM")),
+                exports = dailyStats.Select(x => x.ExportCount),
+                reports = dailyStats.Select(x => x.ReportCount)
+            };
+            await JSRuntime.InvokeVoidAsync("createAdminStatsChart", chartData);
+        }
+    }
+} 

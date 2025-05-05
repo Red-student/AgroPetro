@@ -1,88 +1,414 @@
 @page "/about"
+@inject NavigationManager NavigationManager
 
 <PageTitle>О нас</PageTitle>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h1 class="text-center mb-4" style="color: #6BAF92;">О проекте</h1>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h3 style="color: #325D79;">Наша миссия</h3>
-                            <p>Мы стремимся предоставить актуальную и достоверную информацию о состоянии зернового хозяйства в Казахстане. Наша цель - помочь фермерам, агрономам и всем заинтересованным лицам принимать обоснованные решения на основе данных.</p>
-                            
-                            <h3 class="mt-4" style="color: #325D79;">Что мы предлагаем</h3>
-                            <ul class="list-unstyled">
-                                <li class="mb-2"><i class="fas fa-check me-2" style="color: #6BAF92;"></i>Детальную статистику по регионам</li>
-                                <li class="mb-2"><i class="fas fa-check me-2" style="color: #DDB67D;"></i>Исторические данные с 2004 года</li>
-                                <li class="mb-2"><i class="fas fa-check me-2" style="color: #7C5A41;"></i>Аналитические инструменты</li>
-                                <li class="mb-2"><i class="fas fa-check me-2" style="color: #FFA94D;"></i>Визуализацию данных</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <h3 style="color: #325D79;">Наши преимущества</h3>
-                            <div class="card mb-3" style="background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%); color: white;">
-                                <div class="card-body">
-                                    <h5><i class="fas fa-database me-2"></i>Надежные данные</h5>
-                                    <p>Мы используем официальные источники данных и регулярно обновляем информацию</p>
-                                </div>
-                            </div>
-                            <div class="card mb-3" style="background: linear-gradient(135deg, #DDB67D 0%, #7C5A41 100%); color: white;">
-                                <div class="card-body">
-                                    <h5><i class="fas fa-chart-line me-2"></i>Аналитика</h5>
-                                    <p>Предоставляем инструменты для анализа и сравнения данных</p>
-                                </div>
-                            </div>
-                            <div class="card" style="background: linear-gradient(135deg, #7C5A41 0%, #FFA94D 100%); color: white;">
-                                <div class="card-body">
-                                    <h5><i class="fas fa-mobile-alt me-2"></i>Удобный интерфейс</h5>
-                                    <p>Простой и интуитивно понятный интерфейс для работы с данными</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <h3 class="text-center" style="color: #325D79;">Свяжитесь с нами</h3>
-                            <p class="text-center">Если у вас есть вопросы или предложения, мы будем рады их услышать</p>
-                            <div class="text-center">
-                                <a href="mailto:info@example.com" class="btn btn-primary" style="background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%); border: none;">
-                                    <i class="fas fa-envelope me-2"></i>Написать нам
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+<div class="about-page-header">
+    <h1>О нас</h1>
+</div>
+
+<div class="about-bg">
+    <div class="about-container">
+        <div class="about-header">
+            <div class="about-logo-wrapper">
+                <div class="about-logo">
+                    <img src="/images/logo.png" alt="AgroPetro" class="about-logo-img" />
                 </div>
+               
+            </div>
+            <div>
+                <h1 class="about-title">AgroPetro</h1>
+                <p class="about-slogan">Инновационная платформа для агроаналитики и прогнозирования урожайности</p>
+            </div>
+        </div>
+
+        <div class="about-section mission">
+            <div class="about-section-icon"><i class="fas fa-seedling"></i></div>
+            <div>
+                <h2>Наша миссия</h2>
+                <p>Мы помогаем аграриям, фермерам и аналитикам принимать решения на основе достоверных данных и современных технологий. Наша цель — сделать агроаналитику доступной, понятной и полезной для всех.</p>
+            </div>
+        </div>
+
+        <div class="about-section features">
+            <h2><i class="fas fa-star"></i> Наши преимущества</h2>
+            <div class="features-list">
+                <div class="feature-card">
+                    <i class="fas fa-database"></i>
+                    <h4>Надёжные данные</h4>
+                    <p>Используем только официальные источники и регулярно обновляем информацию.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Аналитика и визуализация</h4>
+                    <p>Современные инструменты анализа и красивые графики для глубокого понимания данных.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h4>Открытость</h4>
+                    <p>Мы открыты для сотрудничества, идей и обратной связи от пользователей.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section features">
+            <h2 ><i class="fas fa-user-friends"></i> Наша команда</h2>
+            <div class="features-list">
+                <div class="feature-card">
+                    <i class="fas fa-user-tie"></i>
+                    <h4>Иван Иванов</h4>
+                    <p>Руководитель проекта</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-laptop-code"></i>
+                    <h4>Мария Петрова</h4>
+                    <p>Frontend-разработчик</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h4>Екатерина Ким</h4>
+                    <p>Аналитик данных</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section contact">
+            <h2><i class="fas fa-envelope"></i> Связаться с нами</h2>
+            <p>Есть вопросы или предложения? Мы всегда открыты для обратной связи!</p>
+            <div class="contact-links">
+                <a href="mailto:agropetro@mail.ru" class="contact-btn"><i class="fas fa-envelope"></i> agropetro@mail.ru</a>
+                <a href="tel:+77052683304" class="contact-btn"><i class="fas fa-phone"></i> +7 (705) 268-33-04</a>
+                <a href="https://t.me/" target="_blank" class="contact-btn"><i class="fab fa-telegram"></i> Telegram</a>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    .card {
-        transition: transform 0.3s ease;
+.about-bg {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f7f9fa 0%, #e9ecef 100%);
+    padding: 0 0 3rem 0;
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 0 2rem;
+}
+
+.about-header {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 40px rgba(107,175,146,0.10);
+    padding: 2.5rem 3rem;
+    animation: fadeInCard 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+.about-logo-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.about-logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    box-shadow: 0 8px 32px rgba(107, 175, 146, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-logo-img {
+    width: 80px;
+    height: 99px;
+    object-fit: contain;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.logo-text {
+    font-size: 1.15rem;
+    color: #325D79;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-top: -2.2rem;
+    background: #fff;
+    border-radius: 12px;
+    padding: 0.2rem 1.2rem;
+    box-shadow: 0 2px 8px rgba(107,175,146,0.07);
+    z-index: 2;
+    position: relative;
+}
+
+.about-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2d4c3c;
+    margin-bottom: 0.5rem;
+}
+
+.about-slogan {
+    color: #325D79;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.about-section {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 2rem 2rem 1.5rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    animation: fadeInCard 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+.about-section.mission {
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    color: #fff;
+    box-shadow: 0 4px 24px rgba(107,175,146,0.13);
+}
+
+.about-section-icon {
+    font-size: 2.5rem;
+    color: #fff;
+    background: rgba(50,93,121,0.18);
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.about-section h2 {
+    color: #2d4c3c;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.about-section.mission h2,
+.about-section.mission p {
+    color: #fff;
+}
+
+.about-section.features {
+    flex-direction: column;
+    align-items: stretch;
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(107,175,146,0.10);
+    padding-top: 2.5rem;
+    margin-bottom: 1.2rem;
+    margin-top: 1.2rem;
+}
+
+.about-section.features h2 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #325D79;
+    letter-spacing: 0.5px;
+}
+
+.features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2.5rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.feature-card {
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    border-radius: 20px;
+    box-shadow: 0 6px 32px rgba(107,175,146,0.13);
+    padding: 2.2rem 1.5rem 1.7rem 1.5rem;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    animation: fadeInCard 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+
+.feature-card i {
+    font-size: 2.7rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 2px 8px #6BAF92aa);
+    transition: transform 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 12px 48px rgba(107,175,146,0.18);
+}
+
+.feature-card:hover i {
+    transform: scale(1.15) rotate(-6deg);
+}
+
+.feature-card h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+    color: #fff;
+    letter-spacing: 0.2px;
+}
+
+.feature-card p {
+    color: #f7f9fa;
+    font-size: 1.05rem;
+    margin-bottom: 0;
+}
+
+.team-features {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 2rem 2rem 1.5rem 2rem;
+    margin-bottom: 2rem;
+    animation: fadeInCard 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+.team-features-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #325D79;
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.team-features-title i {
+    color: #6BAF92;
+    font-size: 2.1rem;
+}
+
+.about-section.contact {
+    flex-direction: column;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #6BAF92 0%, #325D79 100%);
+    color: #fff;
+    box-shadow: 0 4px 24px rgba(50,93,121,0.13);
+}
+
+.about-section.contact h2,
+.about-section.contact p {
+    color: #fff;
+}
+
+.contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.contact-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: #fff;
+    color: #6BAF92;
+    border-radius: 10px;
+    padding: 0.7rem 1.3rem;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(107,175,146,0.13);
+    transition: background 0.3s, color 0.3s, transform 0.3s;
+}
+
+.contact-btn i {
+    font-size: 1.1rem;
+}
+
+.contact-btn:hover {
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+}
+
+@@keyframes fadeInCard {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
-    
-    .card:hover {
-        transform: translateY(-5px);
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-    
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #DDB67D 0%, #6BAF92 100%) !important;
+}
+
+@@media (max-width: 900px) {
+    .about-header, .about-section {
+        flex-direction: column;
+        gap: 1.2rem;
+        padding: 1.5rem 1rem;
     }
-    
-    .list-unstyled li {
-        transition: transform 0.3s ease;
+    .about-logo {
+        margin-bottom: 1rem;
+        width: 90px;
+        height: 90px;
     }
-    
-    .list-unstyled li:hover {
-        transform: translateX(10px);
+    .about-container {
+        padding: 2rem 0.5rem 0 0.5rem;
     }
-    h5{
-        color: #FFFAFA;
+    .features-list {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.2rem;
     }
+}
+@@media (max-width: 600px) {
+    .about-header, .about-section {
+        padding: 1rem 0.5rem;
+    }
+    .about-logo {
+        width: 64px;
+        height: 64px;
+    }
+    .features-list {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.about-page-header {
+    text-align: center;
+    animation: fadeInCard 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.about-page-header h1 {
+    font-size: 2.3rem;
+    color: #2d4c3c;
+    background: var(--primary-green);;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 8px rgba(107,175,146,0.07);
+}
 </style> 

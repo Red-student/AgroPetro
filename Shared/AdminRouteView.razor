@@ -1,0 +1,25 @@
+@using Microsoft.AspNetCore.Components.Routing
+@inject NavigationManager NavigationManager
+
+@if (NavMenu.IsAdmin && !IsAdminRoute())
+{
+    NavigationManager.NavigateTo("/admin");
+}
+else
+{
+    <RouteView RouteData="@RouteData" DefaultLayout="@(IsAdminRoute() ? typeof(AdminLayout) : DefaultLayout)" />
+}
+
+@code {
+    [Parameter]
+    public RouteData RouteData { get; set; }
+
+    [Parameter]
+    public Type DefaultLayout { get; set; }
+
+    private bool IsAdminRoute()
+    {
+        var currentUri = NavigationManager.Uri;
+        return currentUri.Contains("/admin", StringComparison.OrdinalIgnoreCase);
+    }
+} 

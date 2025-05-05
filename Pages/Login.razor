@@ -1,0 +1,784 @@
+@page "/login"
+@using OpenEcologyApp.Data
+@using OpenEcologyApp.Services
+@using System.ComponentModel.DataAnnotations
+@inject UserService UserService
+@inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Вход / Регистрация</PageTitle>
+
+<div class="login-container">
+    <div class="login-background">
+        <div class="floating-elements">
+            <div class="floating-element" style="--delay: 0s; --x: 10%; --y: 20%;">
+                <svg viewBox="0 0 100 100" width="40" height="40">
+                    <path d="M50,10 Q80,30 50,90 Q20,30 50,10" fill="#6BAF92" opacity="0.2"/>
+                </svg>
+            </div>
+            <div class="floating-element" style="--delay: 1s; --x: 80%; --y: 40%;">
+                <svg viewBox="0 0 100 100" width="30" height="30">
+                    <circle cx="50" cy="50" r="40" fill="#DDB67D" opacity="0.15"/>
+                </svg>
+            </div>
+            <div class="floating-element" style="--delay: 2s; --x: 30%; --y: 70%;">
+                <svg viewBox="0 0 100 100" width="35" height="35">
+                    <path d="M50,10 L90,90 L10,90 Z" fill="#6BAF92" opacity="0.1"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-card @(activeTab == "register" ? "register-mode" : "")">
+        <div class="card-content">
+            <div class="card-header">
+                <div class="logo-container">
+                    <a href="/">
+                        <img src="/images/logo.png" alt="AgroPetro" class="menu-logo" />
+                    </a>
+                    <h1 class="brand-name">AgroPetro</h1>
+                </div>
+                <div class="welcome-text">Добро пожаловать в будущее агротехнологий</div>
+            </div>
+
+            <div class="tabs-container">
+                <button class="tab-btn @(activeTab == "login" ? "active" : "")" @onclick="SwitchToLogin">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Вход</span>
+                </button>
+                <button class="tab-btn @(activeTab == "register" ? "active" : "")" @onclick="SwitchToRegister">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Регистрация</span>
+                </button>
+            </div>
+
+            <div class="form-container">
+                <div class="tab-content @(isTabSwitching ? (isHidingForm ? "tab-hide-anim" : "tab-show-anim") : "tab-active")">
+                    @if (activeTab == "login")
+                    {
+                        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+                            <DataAnnotationsValidator />
+                            <div class="input-group">
+                                <div class="input-field">
+                                    <input type="email" @bind="loginModel.Email" placeholder=" " required />
+                                    <label>Email</label>
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="input-field">
+                                    <input type="@(showPassword ? "text" : "password")" @bind="loginModel.Password" placeholder=" " required />
+                                    <label>Пароль</label>
+                                    <i class="fas fa-lock"></i>
+                                    <button type="button" class="password-toggle-btn" @onclick="ToggleShowPassword">
+                                        <i class="fas @(showPassword ? "fa-eye-slash" : "fa-eye")"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (!string.IsNullOrEmpty(errorMessage))
+                            {
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span>@errorMessage</span>
+                                </div>
+                            }
+                            <button type="submit" class="submit-btn">
+                                <span>Войти</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </EditForm>
+                    }
+                    else
+                    {
+                        <EditForm Model="@registerModel" OnValidSubmit="HandleRegistration">
+                            <DataAnnotationsValidator />
+                            <div class="input-group">
+                                <div class="input-field">
+                                    <input type="text" @bind="registerModel.UserName" placeholder=" " required />
+                                    <label>Имя пользователя</label>
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="input-field">
+                                    <input type="email" @bind="registerModel.Email" placeholder=" " required />
+                                    <label>Email</label>
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="input-field">
+                                    <input type="@(showPassword ? "text" : "password")" @bind="registerModel.Password" placeholder=" " required />
+                                    <label>Пароль</label>
+                                    <i class="fas fa-lock"></i>
+                                    <button type="button" class="password-toggle-btn" @onclick="ToggleShowPassword">
+                                        <i class="fas @(showPassword ? "fa-eye-slash" : "fa-eye")"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (!string.IsNullOrEmpty(errorMessage))
+                            {
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span>@errorMessage</span>
+                                </div>
+                            }
+                            <button type="submit" class="submit-btn">
+                                <span>Создать аккаунт</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </EditForm>
+                    }
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <i class="fas fa-leaf"></i>
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Активных фермеров</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="stat-number">30%</span>
+                        <span class="stat-label">Рост урожайности</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-tractor"></i>
+                        <span class="stat-number">5000+</span>
+                        <span class="stat-label">Гектаров под контролем</span>
+                    </div>
+                </div>
+                <div class="terms-text">
+                    Нажимая кнопку, вы соглашаетесь с <a href="#">условиями использования</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+    animation: pageFadeIn 0.8s ease-out;
+}
+
+@@keyframes pageFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.floating-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.floating-element {
+    position: absolute;
+    animation: float 15s infinite ease-in-out;
+    animation-delay: var(--delay);
+    left: var(--x);
+    top: var(--y);
+}
+
+@@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(10px, 10px) rotate(5deg); }
+    50% { transform: translate(0, 20px) rotate(0deg); }
+    75% { transform: translate(-10px, 10px) rotate(-5deg); }
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    animation: cardSlideUp 0.8s ease-out 0.2s both;
+}
+
+@@keyframes cardSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-content {
+    padding: 40px;
+    animation: contentFadeIn 0.8s ease-out 0.4s both;
+}
+
+@@keyframes contentFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.logo-container a {
+    display: block;
+    transition: transform 0.3s ease;
+    background: linear-gradient(135deg, #6BAF92 0%, #DDB67D 100%);
+    box-shadow: 0 2px 12px #6BAF9244;
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.logo-container a:hover {
+    transform: scale(1.05);
+}
+
+.menu-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(107, 175, 146, 0.2));
+}
+
+.logo-svg {
+    animation: none;
+}
+
+.logo-path {
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    animation: drawPath 2s ease forwards;
+}
+
+.logo-leaf {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: drawLeaf 2s ease forwards 0.5s;
+}
+
+.logo-dot {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards 1.5s;
+}
+
+@@keyframes drawPath {
+    to { stroke-dashoffset: 0; }
+}
+
+@@keyframes drawLeaf {
+    to { stroke-dashoffset: 0; }
+}
+
+@@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.brand-name {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(45deg, #6BAF92, #DDB67D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+.welcome-text {
+    color: #666;
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+.tabs-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: #f8f9fa;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #666;
+    font-weight: 500;
+}
+
+.tab-btn i {
+    font-size: 18px;
+}
+
+.tab-btn.active {
+    background: linear-gradient(45deg, #6BAF92, #DDB67D);
+    color: white;
+    box-shadow: 0 4px 15px rgba(107, 175, 146, 0.3);
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.input-field {
+    position: relative;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 16px 16px 16px 45px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.input-field input:focus {
+    border-color: #6BAF92;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(107, 175, 146, 0.1);
+}
+
+.input-field label {
+    position: absolute;
+    left: 45px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.input-field input:focus + label,
+.input-field input:not(:placeholder-shown) + label {
+    top: 0;
+    left: 16px;
+    font-size: 12px;
+    background: white;
+    padding: 0 4px;
+    color: #6BAF92;
+}
+
+.input-field i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6BAF92;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.password-toggle-btn:hover {
+    background: rgba(107, 175, 146, 0.1);
+    color: #6BAF92;
+}
+
+.password-toggle-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(107, 175, 146, 0.2);
+}
+
+.password-toggle-btn i {
+    font-size: 16px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease;
+}
+
+.password-toggle-btn:hover i {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.error-message {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    color: #c53030;
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #6BAF92, #DDB67D);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(107, 175, 146, 0.3);
+}
+
+.submit-btn i {
+    transition: transform 0.3s ease;
+}
+
+.submit-btn:hover i {
+    transform: translateX(4px);
+}
+
+.card-footer {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: rgba(107, 175, 146, 0.05);
+    border-radius: 12px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: rgba(107, 175, 146, 0.1);
+    transform: translateY(-2px);
+}
+
+.stat-item i {
+    font-size: 24px;
+    color: #6BAF92;
+    margin-bottom: 8px;
+}
+
+.stat-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #666;
+}
+
+.terms-text {
+    font-size: 12px;
+    color: #666;
+}
+
+.terms-text a {
+    color: #6BAF92;
+    text-decoration: none;
+}
+
+.terms-text a:hover {
+    text-decoration: underline;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    line-height: 1;
+}
+
+.password-toggle-btn:hover {
+    background: rgba(107, 175, 146, 0.1);
+    color: #6BAF92;
+}
+
+.password-toggle-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(107, 175, 146, 0.2);
+}
+
+.password-toggle-btn i {
+    font-size: 16px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease;
+}
+
+.password-toggle-btn:hover i {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+@@media (max-width: 480px) {
+    .card-content {
+        padding: 30px 20px;
+    }
+    
+    .brand-name {
+        font-size: 24px;
+    }
+    
+    .tabs-container {
+        flex-direction: column;
+    }
+    
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .stat-item {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        text-align: left;
+    }
+    
+    .stat-item i {
+        margin-bottom: 0;
+    }
+}
+
+.form-container {
+    width: 100%;
+    position: relative;
+}
+.tab-content {
+    opacity: 0;
+    transform: translateY(60px) scale(0.96);
+    transition: opacity 0.6s cubic-bezier(0.77,0,0.175,1), transform 0.6s cubic-bezier(0.77,0,0.175,1);
+}
+.tab-content.tab-active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+.tab-show-anim {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1);
+}
+.tab-hide-anim {
+    opacity: 0 !important;
+    transform: translateY(60px) scale(0.96);
+}
+</style>
+
+@code {
+    private string activeTab = "login";
+    private string? errorMessage;
+    private LoginModel loginModel = new();
+    private RegisterModel registerModel = new();
+    private bool showPassword = false;
+    private bool isTabSwitching = false;
+    private bool isHidingForm = false;
+
+    private void SwitchToLogin() => SwitchTab("login");
+    private void SwitchToRegister() => SwitchTab("register");
+
+    private async void SwitchTab(string tab)
+    {
+        if (tab == activeTab) return;
+        errorMessage = null;
+        isHidingForm = true;
+        isTabSwitching = true;
+        StateHasChanged();
+        await Task.Delay(600);
+        activeTab = tab;
+        showPassword = false;
+        isHidingForm = false;
+        StateHasChanged();
+        await Task.Delay(10); // небольшой delay для плавности
+        isTabSwitching = false;
+        StateHasChanged();
+    }
+
+    private void ToggleShowPassword()
+    {
+        showPassword = !showPassword;
+    }
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var user = await UserService.AuthenticateUser(loginModel.Email, loginModel.Password);
+            if (user != null)
+            {
+                NavMenu.SetAuth(true, user.IsAdmin);
+                NavMenu.CurrentUserId = user.UserId;
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Неверный email или пароль";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Ошибка при входе: " + ex.Message;
+        }
+    }
+
+    private async Task HandleRegistration()
+    {
+        try
+        {
+            var user = new User
+            {
+                UserName = registerModel.UserName,
+                Email = registerModel.Email,
+                Password = registerModel.Password,
+                IsAdmin = false
+            };
+
+            var result = await UserService.RegisterUser(user);
+            if (result)
+            {
+                var registeredUser = await UserService.AuthenticateUser(registerModel.Email, registerModel.Password);
+                NavMenu.SetAuth(true, false);
+                NavMenu.CurrentUserId = registeredUser?.UserId;
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Пользователь с таким email уже существует";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Ошибка при регистрации: " + ex.Message;
+        }
+    }
+
+    public class LoginModel
+    {
+        [Required(ErrorMessage = "Введите email")]
+        [EmailAddress(ErrorMessage = "Введите корректный email")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "Введите пароль")]
+        public string Password { get; set; } = "";
+    }
+
+    public class RegisterModel
+    {
+        [Required(ErrorMessage = "Введите имя пользователя")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Имя пользователя должно быть от 3 до 50 символов")]
+        public string UserName { get; set; } = "";
+
+        [Required(ErrorMessage = "Введите email")]
+        [EmailAddress(ErrorMessage = "Введите корректный email")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "Введите пароль")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Пароль должен быть от 6 до 100 символов")]
+        public string Password { get; set; } = "";
+    }
+} 

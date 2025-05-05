@@ -1,0 +1,11 @@
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (!NavMenu.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+} 

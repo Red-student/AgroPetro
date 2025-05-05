@@ -1,55 +1,73 @@
-﻿@using Microsoft.AspNetCore.Components.Routing
+﻿@inject NavigationManager NavigationManager
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">
-            
-            <i class="fas fa-seedling me-2"></i>Мониторинг урожая
+<nav class="main-menu">
+    <div class="menu-brand">
+        <a href="/">
+            <img src="/images/logo.png" alt="AgroPetro" class="menu-logo" />
+            <span class="menu-title">AgroPetro</span>
         </a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
     </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <i class="fas fa-home me-2"></i>Главная
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="grain-data">
-                <i class="fas fa-database me-2"></i>Зерновые данные
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="yield-by-year">
-                <i class="fas fa-chart-line me-2"></i>Отчеты
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="analytics">
-                <i class="fas fa-chart-bar me-2"></i>Аналитика
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="about">
-                <i class="fas fa-info-circle me-2"></i>О нас
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
+    <ul class="menu-list">
+        @if (!IsAdmin)
+        {
+            <li><a href="/">Главная</a></li>
+            <li><a href="/yield-by-year" @onclick="OnProtectedClick">Зерновые культуры</a></li>
+            <li><a href="/analytics" @onclick="OnProtectedClick">Аналитика</a></li>
+            <li><a href="/profile" @onclick="OnProtectedClick">Профиль</a></li>
+            <li><a href="/about">О нас</a></li>
+        }
+        @if (IsAdmin)
+        {
+            <li><a href="/admin">Админ панель</a></li>
+        }
+        @if (IsAuthenticated)
+        {
+            <li><button class="menu-btn" @onclick="Logout">Выйти</button></li>
+        }
+        else if (!IsAdmin)
+        {
+            <li><a href="/login">Вход/Регистрация</a></li>
+        }
+    </ul>
+</nav>
 
 @code {
-    private bool collapseNavMenu = true;
+    public static bool IsAuthenticated { get; set; }
+    public static bool IsAdmin { get; set; }
+    public static event Action? AuthStateChanged;
+    public static int? CurrentUserId { get; set; }
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    protected override void OnInitialized()
     {
-        collapseNavMenu = !collapseNavMenu;
+        AuthStateChanged += OnAuthStateChanged;
+    }
+    public void Dispose()
+    {
+        AuthStateChanged -= OnAuthStateChanged;
+    }
+    private void OnAuthStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public static void SetAuth(bool isAuth, bool isAdmin)
+    {
+        IsAuthenticated = isAuth;
+        IsAdmin = isAdmin;
+        AuthStateChanged?.Invoke();
+    }
+
+    private void Logout()
+    {
+        SetAuth(false, false);
+        NavigationManager.NavigateTo("/login");
+    }
+
+    private void OnProtectedClick()
+    {
+        if (!IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 }
